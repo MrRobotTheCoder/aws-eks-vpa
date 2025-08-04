@@ -13,7 +13,12 @@ resource "null_resource" "git_clone" {
 resource "null_resource" "install_vpa" {
   depends_on = [null_resource.git_clone]
  provisioner "local-exec" { 
-    command = "${path.module}/autoscaler/vertical-pod-autoscaler/hack/vpa-up.sh"
+    command = <<EOT
+    cd ${path.module}/autoscaler && \
+    git fetch --tags && \
+    git checkout tags/vertical-pod-autoscaler/v1.4.1 && \
+    ./vertical-pod-autoscaler/hack/vpa-up.sh
+    EOT
   }
 }
 
